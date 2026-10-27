@@ -289,6 +289,17 @@ describe('the words written beside a failure fact', () => {
     expect(retrying({})).toBe('Codex hit a temporary problem and is retrying.')
   })
 
+  it('says the provider was unreachable instead of blaming the message', () => {
+    const unreachable = (fact: Omit<AgentSessionFailureFact, 'kind'>) =>
+      agentSessionFailureSentence({ kind: 'providerUnreachable', ...fact }, 'row', {
+        agentName: 'Pi'
+      })
+    expect(unreachable({ detail: { text: 'Connection error.', audience: 'person' } })).toBe(
+      "Pi couldn't reach the model provider: Connection error."
+    )
+    expect(unreachable({})).toBe("Pi couldn't reach the model provider.")
+  })
+
   it("puts the provider's account of what failed on the retry row's second line", () => {
     const retrying = (fact: Omit<AgentSessionFailureFact, 'kind'>) =>
       agentSessionFailureSentence({ kind: 'providerRetrying', ...fact }, 'row', {

@@ -49,6 +49,8 @@ export const AGENT_SESSION_FAILURE_KINDS = [
   'providerExited',
   'restartFailed',
   'providerRejected',
+  /** The model provider was unreachable during a run; the message itself was fine. */
+  'providerUnreachable',
   'attachmentInvalid',
   'attachmentUnreadable',
   'emptyMessage',
@@ -100,6 +102,7 @@ const STATUS_ROW_ONLY_FAILURE_KINDS = [
   'backgroundTaskNotStopped',
   'answerUnconfirmed',
   'providerRetrying',
+  'providerUnreachable',
   'usageLimitReached',
   'previousExitUnverifiable',
   'sessionNotRestored'

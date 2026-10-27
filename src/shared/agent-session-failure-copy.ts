@@ -98,6 +98,8 @@ export const AGENT_SESSION_FAILURE_COPY = {
     '{{agent}} has stopped, so your answer was not sent. Send a message to continue.',
   providerRejected: "{{agent}} didn't accept this message.",
   providerRejectedQuoted: "{{agent}} didn't accept this message: {{detail}}.",
+  providerUnreachable: "{{agent}} couldn't reach the model provider.",
+  providerUnreachableQuoted: "{{agent}} couldn't reach the model provider: {{detail}}.",
   attachmentEmpty: 'An image on this message is empty, so the message was not sent.',
   attachmentTooLarge: 'An image on this message is too large, so the message was not sent.',
   attachmentLargerThan:

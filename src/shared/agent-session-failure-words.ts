@@ -200,6 +200,14 @@ const FAILURE_SENTENCES = {
       fact.detail,
       agent(say, context)
     ),
+  providerUnreachable: (context, fact, _surface, say) =>
+    quotingPersonDetail(
+      say,
+      'providerUnreachable',
+      'providerUnreachableQuoted',
+      fact.detail,
+      agent(say, context)
+    ),
   attachmentInvalid: (context, fact, _surface, say) =>
     fact.attachment
       ? attachmentProblemSentence(say, context, fact.attachment)

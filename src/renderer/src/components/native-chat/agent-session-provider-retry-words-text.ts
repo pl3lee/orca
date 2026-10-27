@@ -41,6 +41,18 @@ export const PROVIDER_RETRY_PIECES = {
       'components.native-chat.failureWords.providerRetryLastError',
       COPY.providerRetryLastError,
       values
+    ),
+  providerUnreachable: (values) =>
+    translate(
+      'components.native-chat.failureWords.providerUnreachable',
+      COPY.providerUnreachable,
+      values
+    ),
+  providerUnreachableQuoted: (values) =>
+    translate(
+      'components.native-chat.failureWords.providerUnreachableQuoted',
+      COPY.providerUnreachableQuoted,
+      values
     )
 } satisfies Partial<
   Record<AgentSessionFailureCopyId, (values: AgentSessionFailureCopyValues) => string>

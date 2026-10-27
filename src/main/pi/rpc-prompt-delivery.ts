@@ -36,6 +36,18 @@ export function piRpcFailureFact(error: string) {
   )
 }
 
+const PI_PROVIDER_UNREACHABLE =
+  /(connection error|fetch failed|socket hang up|econnrefused|econnreset|enotfound|eai_again|etimedout|connection reset|network (?:error|connection))/i
+
+/** A run that lost its provider is not a message the agent refused. */
+export function piRpcTurnFailureFact(error: string) {
+  return PI_PROVIDER_UNREACHABLE.test(error)
+    ? agentSessionFailureFact('providerUnreachable', {
+        detail: providerDiagnostic(error, 'person')
+      })
+    : piRpcFailureFact(error)
+}
+
 function piRejection(fact: SubmissionRejectionFact): AgentSessionDispatchOutcome {
   return {
     state: 'rejected',

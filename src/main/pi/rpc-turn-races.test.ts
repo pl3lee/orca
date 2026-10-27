@@ -69,7 +69,8 @@ describe('Pi turn settlement races', () => {
     ['No API key found for anthropic', 'notSignedIn'],
     ['No API key found elsewhere', 'providerRejected'],
     ['Rate limit exceeded', 'providerRejected'],
-    ['Network connection failed', 'providerRejected']
+    ['Network connection failed', 'providerUnreachable'],
+    ['Connection error.', 'providerUnreachable']
   ] as const)('keeps accepted-turn failure classification: %s', async (detail, kind) => {
     const h = await setup()
     await h.start()
@@ -92,6 +93,9 @@ describe('Pi turn settlement races', () => {
     expect(errors[0]?.text).toContain(detail)
     if (kind === 'notSignedIn') {
       expect(errors[0]?.text).toContain('`/login`')
+    }
+    if (kind === 'providerUnreachable') {
+      expect(errors[0]?.text).toContain("couldn't reach the model provider")
     }
   })
   it('keeps a reply whose finished thinking and text blocks outnumber the open-stream bound', async () => {

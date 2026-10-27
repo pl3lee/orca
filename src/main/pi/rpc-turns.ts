@@ -9,7 +9,7 @@ import type { JsonlRpcRequestOptions } from '../jsonl-rpc/peer-oversized-record'
 import type { JsonlRpcTimelineLane } from '../jsonl-rpc/timeline-lane'
 import { PiRpcContextUsage } from './rpc-context-usage'
 import { PiRpcMessages, piRpcSkippedEventNotice } from './rpc-messages'
-import { PiRpcPromptDelivery, piRpcFailureFact } from './rpc-prompt-delivery'
+import { PiRpcPromptDelivery, piRpcTurnFailureFact } from './rpc-prompt-delivery'
 import { PiRpcIdleCheck } from './rpc-idle-check'
 import { piRpcRetryActivity } from './rpc-retry-activity'
 import { piRpcMessageSchema, piRpcSkippedEvent } from './rpc-protocol'
@@ -280,7 +280,7 @@ export class PiRpcTurns {
         : 'success'
     const events: ProviderTimelineEvent[] = []
     if (outcome === 'failure' && this.failure) {
-      const fact = piRpcFailureFact(this.failure)
+      const fact = piRpcTurnFailureFact(this.failure)
       events.push({
         type: 'item.close',
         item: `error:${this.active}`,
