@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { waitForPromiseWithSignal } from '../../shared/abort-signal-reason'
 import type {
   AgentSessionCommandsResult,
+  AgentSessionModelOption,
   AgentSessionOptionsResult
 } from '../../shared/agent-session-wire'
 import { piRpcModelSchema, piRpcStateSchema } from './rpc-protocol'
@@ -34,10 +35,6 @@ const commandsSchema = z.object({
 })
 
 const THINKING_LEVELS = ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'] as const
-/** The levels a reasoning model offers unless its thinking map removes one; the rest need a map entry. */
-export const PI_UNMAPPED_THINKING_LEVELS = THINKING_LEVELS.filter(
-  (level) => level !== 'xhigh' && level !== 'max'
-)
 
 export function piModelOptionId(provider: string, modelId: string): string {
   if (!provider || !modelId || provider.includes('/')) {
@@ -54,14 +51,12 @@ export function parsePiModelOptionId(value: string): { provider: string; modelId
   return { provider: value.slice(0, slash), modelId: value.slice(slash + 1) }
 }
 
-export async function readPiRpcSessionOptions(
+/** Each reasoning model keeps its own mapped levels: unmapped ones default on except `xhigh`/`max`. */
+export async function readPiRpcModelCatalog(
   rpc: PiRpcRequester
-): Promise<AgentSessionOptionsResult> {
-  const models = modelsSchema.parse(await rpc.request('get_available_models')).models
-  const state = stateSchema.parse(await rpc.request('get_state'))
-  const currentModel = state.model
-  const currentId = currentModel ? piModelOptionId(currentModel.provider, currentModel.id) : ''
-  const listed = models.map((model) => {
+): Promise<AgentSessionModelOption[]> {
+  const { models } = modelsSchema.parse(await rpc.request('get_available_models'))
+  return models.map((model) => {
     const id = piModelOptionId(model.provider, model.id)
     const efforts =
       model.reasoning !== true
@@ -79,6 +74,15 @@ export async function readPiRpcSessionOptions(
       efforts
     }
   })
+}
+
+export async function readPiRpcSessionOptions(
+  rpc: PiRpcRequester
+): Promise<AgentSessionOptionsResult> {
+  const listed = await readPiRpcModelCatalog(rpc)
+  const state = stateSchema.parse(await rpc.request('get_state'))
+  const currentModel = state.model
+  const currentId = currentModel ? piModelOptionId(currentModel.provider, currentModel.id) : ''
   return {
     models: listed,
     current: {

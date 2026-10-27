@@ -3,6 +3,7 @@ import {
   applyPiRpcSessionOption,
   parsePiModelOptionId,
   readPiRpcCommands,
+  readPiRpcModelCatalog,
   readPiRpcSessionOptions,
   type PiRpcRequester
 } from './rpc-options'
@@ -138,5 +139,50 @@ describe('Pi RPC session options', () => {
     expect(
       (await readPiRpcSessionOptions(rpc)).models[0]?.efforts.map(({ value }) => value)
     ).toEqual(['off', 'minimal', 'low', 'medium', 'high', 'xhigh'])
+  })
+
+  it('reports the catalog alone from each model’s thinking map, max included', async () => {
+    const rpc = requester({
+      get_available_models: {
+        models: [
+          {
+            provider: 'anthropic',
+            id: 'claude-sonnet-4',
+            name: 'Claude Sonnet 4',
+            reasoning: true,
+            thinkingLevelMap: { xhigh: 'xhigh', max: 'max' }
+          },
+          {
+            provider: 'anthropic',
+            id: 'claude-haiku-4',
+            reasoning: true,
+            thinkingLevelMap: { off: null, minimal: null, max: 'max' }
+          },
+          { provider: 'openai', id: 'gpt-4o-mini', reasoning: false }
+        ]
+      }
+    })
+    expect(
+      (await readPiRpcModelCatalog(rpc)).map((model) => [
+        model.id,
+        model.label,
+        model.isDefault,
+        model.efforts.map(({ value }) => value)
+      ])
+    ).toEqual([
+      [
+        'anthropic/claude-sonnet-4',
+        'Claude Sonnet 4',
+        false,
+        ['off', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']
+      ],
+      [
+        'anthropic/claude-haiku-4',
+        'anthropic/claude-haiku-4',
+        false,
+        ['low', 'medium', 'high', 'max']
+      ],
+      ['openai/gpt-4o-mini', 'openai/gpt-4o-mini', false, []]
+    ])
   })
 })
