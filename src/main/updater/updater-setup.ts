@@ -139,6 +139,10 @@ export class UpdaterSetup extends UpdaterDownloadInstall {
     if (!app.isPackaged) {
       return
     }
+    // Fork builds are installed manually and must never take the upstream feed.
+    if (app.getVersion().includes('-local.')) {
+      return
+    }
 
     const autoUpdater = this.getAutoUpdater()
     configureMacShipItScheduling()

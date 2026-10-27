@@ -17,6 +17,11 @@ export abstract class UpdaterMenuChecks extends UpdaterScheduling {
       this.sendStatus({ state: 'not-available', userInitiated: true })
       return
     }
+    // Fork builds are installed manually; never let a menu check reach the upstream feed.
+    if (app.getVersion().includes('-local.')) {
+      this.sendStatus({ state: 'not-available', userInitiated: true })
+      return
+    }
     if (options?.localBuild) {
       void this.checkForLocalBuildFromMenu()
       return
