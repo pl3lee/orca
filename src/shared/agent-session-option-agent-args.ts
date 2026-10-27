@@ -57,7 +57,8 @@ const AGENT_REQUIRED_VALUE_OPTIONS: Partial<Record<AgentType, readonly string[]>
     '--add-dir',
     '--plugin-dir',
     '--worktree-base'
-  ]
+  ],
+  pi: ['--model', '-m', '--thinking', '--provider']
 }
 
 export function agentArgTerminatorIndex(agent: AgentType, tokens: readonly string[]): number {
