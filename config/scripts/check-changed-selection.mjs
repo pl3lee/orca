@@ -20,6 +20,7 @@ const LOCALES = 'src/renderer/src/i18n/'
 
 // Ratchets default to SOURCE_ROOTS; list narrower inputs only where a scan is clearly scoped.
 const RATCHET_INPUTS = {
+  'check-daemon-blocking-call-ratchet.mjs': ['src/main/'],
   'check-e2e-typecheck-ratchet.mjs': ['tests/', 'config/tsconfig.e2e.json'],
   'check-focus-read-ratchet.mjs': ['src/renderer/src/', 'src/shared/'],
   'check-host-list-render-ratchet.mjs': ['src/renderer/src/'],
